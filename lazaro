@@ -1,0 +1,115 @@
+#!/usr/env/python3
+
+#external libraries
+import argparse
+import os
+import platform
+import signal
+import subprocess
+import sys
+import time
+
+#custom libraries
+paths = ['/home/iarwin/desktop/lazaro/essentials/']
+for path in paths:
+    sys.path.append(path)
+
+import essential_bases
+import environment_essentials
+
+#colors
+green = "\033[38;2;60;236;133m"
+red = "\033[31m"
+blue = "\033[34m"
+yellow = "\033[33m"
+purple = "\033[35m"
+turquoise = "\033[36m"
+gray = "\033[37m"
+end = "\033[0m"
+
+#functions
+def ctrl_c(signal, frame):
+    print(f'\n\033[31m[!]\033[0m leaving...\n')
+    os.system("tput cnorm")
+    sys.exit(1)
+
+def help_menu():
+    print("lola")
+
+class main:
+    def __init__(self):
+        #colors
+        self.green = "\033[38;2;60;236;133m"
+        self.red = "\033[31m"
+        self.blue = "\033[34m"
+        self.yellow = "\033[33m"
+        self.purple = "\033[35m"
+        self.turquoise = "\033[36m"
+        self.gray = "\033[37m"
+        self.end = "\033[0m"
+
+        #essential variables
+        self.operative_system = platform.system()
+        self.user = subprocess.check_output(["whoami"], universal_newlines=True).strip()
+        self.time_sleeping = 0                                                                      #MUY IMPORTANTE CAMBIAR ESTO
+        self.verbose = args.verbose
+        self.summary = []
+
+        environment_essentials.required_environment_checker(self) 
+
+        #more essential variables (once in appropiated environment)
+        self.groups = subprocess.check_output(["groups"], universal_newlines=True).strip().split()
+
+        #scan starts
+        essential_bases.essential_bases_checker(self)
+
+        #scan ends
+        time.sleep(self.time_sleeping)
+        sys.stdout = sys.__stdout__
+
+        if not self.summary:
+                self.summary.append(f'{self.blue}║{self.end}  [{self.green}+{self.end}] nothing was found (good {self.green}luck{end})')
+
+        print(f'\n{self.blue}╔═══════════════╣  {self.green}SUMMARY{self.blue}  ╠═══════════════╗')
+        print(f'{self.blue}║                                           ║{self.end}')
+        for line in self.summary:
+            print(line)
+        print(f'{self.blue}║                               {self.end}')
+        print(f'{self.blue}╚═══════╝{self.end}')
+        
+        os.system("tput cnorm")
+        
+
+
+
+#hide writing cursor
+os.system("tput civis")
+
+signal.signal(signal.SIGINT, ctrl_c)
+
+parser = argparse.ArgumentParser(description="lazaro", add_help = False)
+
+parser.add_argument('-h', '--help', help = 'help', action = 'store_true')
+parser.add_argument('-v', '--verbose', help='verbose', action = 'store_true')
+
+args = parser.parse_args()
+
+if args.help:
+    print(f'\n{green}[+]{end} usage:\n')
+    print(f'\t{blue}-h{end} | {blue}--help{end}\t\t\thelp menu')
+    print(f'\t{blue}-v{end} | {blue}--verbose{end}\t\t\tverbose')
+
+    print(f'\n{green}[+]{end} color code:\n')
+    print(f'\t{green}GREEN\t\t-->\t\tinformative{end}')
+    print(f'\t{yellow}YELLOW\t\t-->\t\tcould be interesting{end}')
+    print(f'\t{red}RED\t\t-->\t\tcritical (requires password){end}')
+    print(f"\t{purple}RED\t\t-->\t\tcritical (doesn't need password){end}")
+    print(f'\t{blue}BLUE\t\t-->\t\tinformative{end}\n')
+
+    os.system("tput cnorm")
+    sys.exit(0)
+
+if not args.verbose:
+    sys.stdout = open(os.devnull, 'w')
+
+instance = main()
