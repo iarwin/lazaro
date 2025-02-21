@@ -10,7 +10,9 @@ import sys
 import time
 
 #custom libraries
-paths = ['/home/iarwin/desktop/lazaro/essentials/']
+main_path = os.getcwd() 
+
+paths = [f'{main_path}/essentials']
 for path in paths:
     sys.path.append(path)
 
