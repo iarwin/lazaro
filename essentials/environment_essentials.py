@@ -41,7 +41,7 @@ class required_environment_checker:
         def __init__(self, main_self):
             self = main_self
 
-            self.utilities_to_test = ['clear', 'groups', 'tput']
+            self.utilities_to_test = ['clear', 'groups', 'sudo', 'tput']
             self.utilities_not_found_list = []
 
             for utility in self.utilities_to_test:
