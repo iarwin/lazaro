@@ -24,7 +24,7 @@ green = "\033[38;2;60;236;133m"
 red = "\033[31m"
 blue = "\033[34m"
 yellow = "\033[33m"
-purple = "\033[35m"
+pink = "\033[38;5;213m"
 turquoise = "\033[36m"
 gray = "\033[37m"
 end = "\033[0m"
@@ -45,7 +45,7 @@ class main:
         self.red = "\033[31m"
         self.blue = "\033[34m"
         self.yellow = "\033[33m"
-        self.purple = "\033[35m"
+        self.pink = "\033[38;5;213m"
         self.turquoise = "\033[36m"
         self.gray = "\033[37m"
         self.end = "\033[0m"
@@ -53,7 +53,7 @@ class main:
         #essential variables
         self.operative_system = platform.system()
         self.user = subprocess.check_output(["whoami"], universal_newlines=True).strip()
-        self.time_sleeping = 0                                                                      #MUY IMPORTANTE CAMBIAR ESTO
+        self.time_sleeping = 0.5                                                                      #MUY IMPORTANTE CAMBIAR ESTO
         self.verbose = args.verbose
         self.summary = []
 
@@ -70,14 +70,19 @@ class main:
         sys.stdout = sys.__stdout__
 
         if not self.summary:
-                self.summary.append(f'{self.blue}║{self.end}  [{self.green}+{self.end}] nothing was found (good {self.green}luck{end})')
+                self.summary.append(f'{self.blue}║{self.end}  [{self.green}+{self.end}] nothing was found (good {self.green}luck{self.end})')
 
-        print(f'\n{self.blue}╔═══════════════╣  {self.green}SUMMARY{self.blue}  ╠═══════════════╗')
-        print(f'{self.blue}║                                           ║{self.end}')
+        print(f'\n{self.blue}╔═════════════════╣  {self.green}SUMMARY{self.blue}  ╠═════════════════╗')
+        print(f'{self.blue}║\t\t\t\t\t\t║{self.end}')
+
         for line in self.summary:
             print(line)
+
+            if line != self.summary[-1]:
+                print(f'{self.blue}║{self.end}')
+        
         print(f'{self.blue}║                               {self.end}')
-        print(f'{self.blue}╚═══════╝{self.end}')
+        print(f'{self.blue}╚═══════╝{self.end}\n')
         
         os.system("tput cnorm")
         
@@ -104,8 +109,8 @@ if args.help:
     print(f'\n{green}[+]{end} color code:\n')
     print(f'\t{green}GREEN\t\t-->\t\tinformative{end}')
     print(f'\t{yellow}YELLOW\t\t-->\t\tcould be interesting{end}')
-    print(f'\t{red}RED\t\t-->\t\tcritical (requires password){end}')
-    print(f"\t{purple}RED\t\t-->\t\tcritical (doesn't need password){end}")
+    print(f"\t{red}RED\t\t-->\t\tcritical (doesn't need password){end}")
+    print(f'\t{pink}PINK\t\t-->\t\tcritical (password required){end}')
     print(f'\t{blue}BLUE\t\t-->\t\tinformative{end}\n')
 
     os.system("tput cnorm")
