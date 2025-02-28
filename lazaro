@@ -9,6 +9,23 @@ import subprocess
 import sys
 import time
 
+#check python version
+python_version = sys.version.split(' ').pop(0).split('.')
+
+if len(python_version) == 1:
+    python_version.append('0')
+
+if int(python_version[0]) < 3:
+    print('\npython not updated, execute file "python_upgrader" to (hopefuly) solve this problem\n')
+    sys.exit(1)
+
+if int(python_version[1]) <= 5 and int(python_version[0]) <= 3:
+    print('\npython not updated, check file "python_upgrader" to (hopefuly) solve this problem\n')
+    sys.exit(1)
+
+#this will be the error message if f strings not aviable in the version of python installed
+python_version_under_3_6 = f'python not updated, check file "python_upgrader" to (hopefuly) solve this problem'
+
 #custom libraries
 main_path = os.getcwd() 
 
@@ -16,7 +33,7 @@ paths = [f'{main_path}/essentials']
 for path in paths:
     sys.path.append(path)
 
-import essential_bases
+import basics
 import environment_essentials
 
 #colors
@@ -32,7 +49,9 @@ end = "\033[0m"
 #functions
 def ctrl_c(signal, frame):
     print(f'\n\033[31m[!]\033[0m leaving...\n')
-    os.system("tput cnorm")
+
+    #show writing cursor
+    print('\033[?25h', end='\r')
     sys.exit(1)
 
 def help_menu():
@@ -52,8 +71,8 @@ class main:
 
         #essential variables
         self.operative_system = platform.system()
-        self.user = subprocess.check_output(["whoami"], universal_newlines=True).strip()
-        self.time_sleeping = 0.5                                                                      #MUY IMPORTANTE CAMBIAR ESTO
+        self.user = subprocess.check_output(["whoami"], universal_newlines = True).strip()
+        self.time_sleeping = .5                                                                      #MUY IMPORTANTE CAMBIAR ESTO
         self.verbose = args.verbose
         self.summary = []
 
@@ -63,7 +82,7 @@ class main:
         self.groups = subprocess.check_output(["groups"], universal_newlines=True).strip().split()
 
         #scan starts
-        essential_bases.essential_bases_checker(self)
+        basics.essential_bases_checker(self)
 
         #scan ends
         time.sleep(self.time_sleeping)
@@ -84,13 +103,13 @@ class main:
         print(f'{self.blue}║                               {self.end}')
         print(f'{self.blue}╚═══════╝{self.end}\n')
         
-        os.system("tput cnorm")
-        
+        #show writing cursor
+        print('\033[?25h', end='\r')
 
 
 
 #hide writing cursor
-os.system("tput civis")
+print('\033[?25l', end='\r')
 
 signal.signal(signal.SIGINT, ctrl_c)
 
@@ -113,7 +132,8 @@ if args.help:
     print(f'\t{pink}PINK\t\t-->\t\tcritical (password required){end}')
     print(f'\t{blue}BLUE\t\t-->\t\tinformative{end}\n')
 
-    os.system("tput cnorm")
+    #show writing cursor
+    print('\033[?25h', end='\r')
     sys.exit(0)
 
 if not args.verbose:
